@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pune Green Spaces | Spatial & Proximity Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+:root{--ink:#172b25;--muted:#6f7e76;--paper:#f5f7f1;--card:#fff;--line:#e3e9e1;--green:#26734d;--lime:#b8d986;--mint:#e7f1e8;--orange:#d88945;--shadow:0 8px 24px #17382a0b}
+*{box-sizing:border-box}html{overflow-x:hidden}body{margin:0;overflow-x:hidden;background:var(--paper);color:var(--ink);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+.wrap{max-width:1480px;width:100%;margin:0 auto;padding:28px clamp(14px,3vw,32px) 40px}.top{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:20px}.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--green);font-weight:800}.top h1{font-size:clamp(25px,3vw,40px);line-height:1.1;letter-spacing:-.04em;margin:7px 0 8px}.sub{color:var(--muted);max-width:760px}.tag{background:#e2eddf;color:#2a6244;border-radius:999px;padding:9px 13px;font-weight:700;white-space:nowrap;font-size:12px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin-bottom:20px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}.kpi{padding:18px 20px;position:relative;overflow:hidden}.kpi:after{content:"";position:absolute;width:72px;height:72px;right:-18px;bottom:-22px;background:var(--mint);border-radius:50%}.kpi .label{color:var(--muted);font-size:12px;font-weight:650}.kpi .num{font-size:32px;font-weight:800;letter-spacing:-.04em;margin:7px 0 3px}.kpi .note{font-size:11px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:20px;align-items:stretch}.grid>*{min-width:0}.mainCol{display:flex;flex-direction:column;gap:20px}.mapcard{overflow:hidden;display:flex;flex-direction:column;flex:1}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:17px 20px;border-bottom:1px solid var(--line)}.section-head h2{margin:0;font-size:15px;letter-spacing:-.02em}.section-head p{margin:3px 0 0;color:var(--muted);font-size:11px}.small-pill{font-size:10px;background:#f0f5ed;border:1px solid #e0e9dc;border-radius:999px;padding:6px 9px;color:#48634f;font-weight:750}#map{flex:1 1 auto;min-height:520px;width:100%;background:#e8eee8}.mapfoot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 16px;padding:12px 18px;color:var(--muted);font-size:11px;border-top:1px solid var(--line)}.side{display:flex;flex-direction:column;gap:20px;min-width:0}.chartcard{padding-bottom:14px}.chart-title{padding:17px 18px 0}.chart-title h3{margin:0;font-size:14px}.chart-title p{margin:4px 0 0;font-size:11px;color:var(--muted)}.chartbox{height:210px;position:relative;padding:12px 16px 0}.chartbox.tall{height:230px}.layers{padding:16px 18px}.layers h3{font-size:14px;margin:0 0 12px}.layer{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eff2ed}.layer:last-child{border:0}.layer input{accent-color:var(--green);width:15px;height:15px}.swatch{width:23px;height:12px;display:inline-block;flex:none}.swatch.lbl{width:23px;height:auto;font-size:12px;font-weight:700;text-align:center;color:#1d3a2c}.dot{width:11px;height:11px;border-radius:50%;background:#236a43;border:2px solid white;box-shadow:0 0 0 1px #236a43}.dash{height:0;border-top:3px dashed #6e7770}.poly{border:2px solid #58a65f;background:repeating-linear-gradient(135deg,#e3f1df 0 4px,#fff 4px 7px)}.layer span:last-child{font-size:12px}.findings{padding:18px}.findings h3{margin:0 0 12px;font-size:14px}.finding{display:flex;gap:11px;padding:10px 0;border-bottom:1px solid #edf0eb}.finding:last-child{border:0}.finding .bullet{background:#e8f2e4;color:var(--green);width:26px;height:26px;display:grid;place-items:center;border-radius:8px;font-weight:800;flex:none}.finding strong{display:block;font-size:12px;margin-bottom:2px}.finding p{margin:0;color:var(--muted);font-size:11px}.bottom{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:20px;margin-top:20px}.bottom>*{min-width:0}.tablecard{overflow:hidden}.tablewrap{overflow:auto;max-height:300px}table{border-collapse:collapse;width:100%;font-size:12px}th,td{text-align:left;padding:11px 16px;border-bottom:1px solid #edf0eb;white-space:nowrap}th{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em;background:#fafbf8;position:sticky;top:0}.top>div:first-child{min-width:0}.sources code{word-break:break-all}td:nth-child(2){max-width:240px;overflow:hidden;text-overflow:ellipsis}.sources{padding:18px}.sources h3{margin:0 0 10px;font-size:14px}.sources p,.sources li{font-size:11px;color:var(--muted)}.sources ul{padding-left:17px;margin:8px 0}.notice{margin-top:14px;background:#fff7e9;border:1px solid #f0dfc2;border-radius:12px;padding:12px 14px;font-size:11px;color:#805b2f}.garden-label{background:transparent;border:0;box-shadow:none;padding:0;font-size:11px;font-weight:600;color:#1d3a2c;text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff,0 0 4px #fff}.garden-label:before{display:none}.hide-labels .garden-label{display:none}.leaflet-control-attribution{font-size:9px!important}.north{background:white;border:1px solid #d8e0d7;border-radius:8px;padding:6px 8px;text-align:center;font-weight:800;color:#17382a;line-height:1.1}.north span{display:block;font-size:20px}
+@media(max-width:1000px){.grid,.bottom{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}#map{min-height:460px}.top{flex-wrap:wrap}}
+@media(max-width:650px){.wrap{padding:13px}.top{align-items:flex-start;flex-direction:column}.kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.kpi{padding:14px}.kpi .num{font-size:27px}.side{display:flex}#map{min-height:400px}.mapfoot{flex-direction:column}.tag{white-space:normal}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div><div class="eyebrow">Pune · Urban green infrastructure</div><h1>Gardens &amp; Proximity Atlas</h1><div class="sub">Spatial distribution of mapped gardens and their proximity relationships across selected parts of Pune, Maharashtra.</div></div>
+    <div class="tag">PostGIS · QGIS spatial analysis</div>
+  </header>
+  <section class="kpis">
+    <div class="card kpi"><div class="label">Garden points</div><div class="num" id="kPts">11</div><div class="note">Point layer · pune_gardens</div></div>
+    <div class="card kpi"><div class="label">Pairs within 1 km</div><div class="num" id="kRel">6</div><div class="note">Line layer · analysis_relationship_1km</div></div>
+    <div class="card kpi"><div class="label">Garden polygons</div><div class="num" id="kPoly">11</div><div class="note">Polygon layer · 100 m × 100 m footprints</div></div>
+    <div class="card kpi"><div class="label">Spatial layers</div><div class="num">5</div><div class="note">1 point, 1 polygon, 3 line layers</div></div>
+  </section>
+  <div class="grid">
+    <div class="mainCol">
+      <section class="card mapcard">
+        <div class="section-head"><div><h2>Spatial distribution map</h2><p>Toggle layers and hover or tap a feature for details</p></div><span class="small-pill">Interactive map</span></div>
+        <div id="map"></div>
+        <div class="mapfoot"><span>Coordinate reference: WGS 84 · EPSG:4326</span><span>Basemap: Esri Light Gray</span></div>
+      </section>
+    </div>
+    <aside class="side">
+      <section class="card layers"><h3>Map layers &amp; symbology</h3><div id="layerList"></div>
+        <div class="lyr"><label><input type="checkbox" id="labelsToggle" checked><span>Garden name labels</span></label></div></section>
+      <section class="card findings">
+        <h3>Key spatial observations</h3>
+        <div class="finding"><div class="bullet">1</div><div><strong>Three groupings</strong><p>Gardens concentrate around Kothrud and Bavdhan in the west, Sopan Buag in the north-east and Kondhwa–Wanawadi in the south-east.</p></div></div>
+        <div class="finding"><div class="bullet">2</div><div><strong>Local proximity</strong><p id="obsRel"></p></div></div>
+        <div class="finding"><div class="bullet">3</div><div><strong>Uniform footprints</strong><p>Every garden carries a 100 m × 100 m polygon, so locations can be compared on equal terms.</p></div></div>
+      </section>
+    </aside>
+  </div>
+  <div class="bottom">
+    <section class="card tablecard"><div class="section-head"><div><h2>Garden register</h2><p>Click a row to zoom to the location</p></div><span class="small-pill">11 records</span></div><div class="tablewrap"><table><thead><tr><th>No.</th><th>Garden</th><th>Prabhag</th><th>Ward</th><th>Latitude</th><th>Longitude</th><th>Nearest garden (m)</th></tr></thead><tbody id="gardenRows"></tbody></table></div></section>
+    <section class="card sources"><h3>Data sources &amp; methodology</h3><ul><li><b>Garden points:</b> <code>pune_gardens</code>, classified by prabhag.</li><li><b>Polygons:</b> <code>garden_polygons</code>, 100 m × 100 m envelopes built in EPSG:32643.</li><li><b>Pairs within 1 km:</b> <code>analysis_relationship_1km</code>, from ST_DWithin at 1,000 m, classified by distance.</li><li><b>Nearest-garden links:</b> <code>analysis_nearest_garden</code>.</li><li><b>Garden connectors:</b> <code>garden_connectors</code>, six selected pairs.</li><li><b>Basemap:</b> Esri World Light Gray Canvas, loaded online.</li></ul><p><b>Distances</b> are calculated in the browser from the coordinates (great-circle). <b>CRS:</b> EPSG:4326 for displayed layers.</p></section>
+  </div>
+  <div class="analytics">
+    <section class="card chartcard"><div class="section-head"><div><h2>Gardens by prabhag</h2><p>Classification used for point and polygon colours</p></div><button class="dlbtn" id="dlA">Download PNG</button></div><div class="chartbox"><canvas id="chA"></canvas></div></section>
+    <section class="card chartcard"><div class="section-head"><div><h2>Pair distances within 1 km</h2><p>Classes: under 600 m, 600–800 m, 800–1000 m</p></div><button class="dlbtn" id="dlB">Download PNG</button></div><div class="chartbox"><canvas id="chB"></canvas></div></section>
+    <section class="card tablecard"><div class="section-head"><div><h2>Statistical summary</h2><p>Key figures from the spatial analysis</p></div><button class="dlbtn" id="dlC">Download CSV</button></div><div class="tablewrap" style="max-height:none"><table class="stat"><tbody id="statRows"></tbody></table></div></section>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const P={'Kondhwa-wanawdi':'#2e7d5b','Kishkindha Nagar':'#3d6fb6','NIBM':'#e08a2c','Mayur Colony':'#8a5fb0','Sopan Buag':'#d0476b','Bavdhan Khurd':'#7a8f2a'};
+const RL=['Under 600 m','600–800 m','800–1000 m'],RC=['#f2b84b','#e07a2f','#a63d2f'];
+const G=[[16,'Sh.Abdul Hamid Ayurvedic Udyan','Kondhwa-wanawdi','',18.473664,73.895746],[37,'Late. Vitthalrao Shivarkar Udyan Jogging Track','Kondhwa-wanawdi','',18.498382,73.899974],[39,'St.Mary Church','Kondhwa-wanawdi','',18.527458,73.905006],[41,'Ramchandra Mane Rd, Ramkrishna Paramhans Nagar, Kothrud','Kishkindha Nagar','Kothrud',18.507941,73.80627],[58,'In front of Kalyani Nagar Steel','Kondhwa-wanawdi','',18.525302,73.909414],[75,'Shivaji Udyan','NIBM','Kondhwa-wanawdi',18.491098,73.901422],[77,'Sarasbaug','Kishkindha Nagar','Kothrud',18.507941,73.80627],[78,'Late. Tatyasaheb Thorat','Mayur Colony','Kothrud',18.504008,73.812288],[79,'Gandharv Garden','Sopan Buag','Kondhwa-wanawdi',18.5185035,73.907392],[80,'Katraj Sarpodyan','Kishkindha Nagar','Kothrud',18.517026,73.808318],[81,'Bharatratna Dr. Bhimsen Joshi','Bavdhan Khurd','Kothrud',18.511476,73.791343]]
+.map((r,i)=>({sr:r[0],no:i+1,name:r[1],prab:r[2],ward:r[3],lat:r[4],lon:r[5]}));
+const BY=Object.fromEntries(G.map(g=>[g.sr,g]));
+const hv=(a,b)=>{const R=6371008.8,t=x=>x*Math.PI/180,dp=t(b.lat-a.lat),dl=t(b.lon-a.lon),h=Math.sin(dp/2)**2+Math.cos(t(a.lat))*Math.cos(t(b.lat))*Math.sin(dl/2)**2;return 2*R*Math.asin(Math.sqrt(h))};
+const rel=[];G.forEach((a,i)=>G.slice(i+1).forEach(b=>{const d=hv(a,b);if(d<=1000)rel.push({a,b,d,c:d<600?0:d<800?1:2})}));
+G.forEach(g=>{let best=null;G.forEach(o=>{if(o!==g){const d=hv(g,o);if(!best||d<best.d)best={o,d}}});g.nn=best});
+const cons=[[16,75],[16,37],[37,75],[39,58],[58,79],[41,78]];
+const fm=d=>Math.round(d).toLocaleString('en-IN');
+const map=L.map('map',{zoomControl:true,zoomSnap:0.25}).setView([18.508,73.85],12);
+const esriAttr='Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, HERE, OpenStreetMap contributors';
+const lightBase=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxZoom:16,attribution:esriAttr}).addTo(map);
+const streetBase=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:esriAttr});
+L.control.layers({'Light gray':lightBase,'Streets':streetBase},null,{position:'topright',collapsed:true}).addTo(map);
+const gp=L.layerGroup(),gy=L.layerGroup(),gr=L.layerGroup(),gn=L.layerGroup(),gc=L.layerGroup(),MK={};
+const dLat=0.00045,dLon=0.00048;
+G.forEach(g=>{const c=P[g.prab];
+ const m=L.circleMarker([g.lat,g.lon],{radius:7,weight:2,color:'#fff',fillColor:c,fillOpacity:1}).bindPopup(`<b>${g.name}</b><br>Prabhag: ${g.prab}${g.ward?'<br>Ward: '+g.ward:''}<br>No. ${g.no} (record ID ${g.sr})<br>${g.lat.toFixed(6)}, ${g.lon.toFixed(6)}<br>Nearest garden: ${fm(g.nn.d)} m`);
+ m.bindTooltip(g.name,{permanent:true,direction:g.sr===77?'bottom':'right',offset:g.sr===77?[0,6]:[8,0],className:'garden-label'});m.addTo(gp);MK[g.sr]=m;
+ L.polygon([[g.lat-dLat,g.lon-dLon],[g.lat-dLat,g.lon+dLon],[g.lat+dLat,g.lon+dLon],[g.lat+dLat,g.lon-dLon]],{color:c,weight:1.5,fillColor:c,fillOpacity:.3}).bindPopup(`<b>Garden polygon</b><br>${g.name}<br>100 m × 100 m footprint (10,000 m²)`).addTo(gy);
+ L.polyline([[g.lat,g.lon],[g.nn.o.lat,g.nn.o.lon]],{color:'#5b6c9d',weight:2,dashArray:'2 6'}).bindPopup(`<b>Nearest garden</b><br>${g.name} → ${g.nn.o.name}<br>${fm(g.nn.d)} m`).addTo(gn)});
+rel.forEach(r=>L.polyline([[r.a.lat,r.a.lon],[r.b.lat,r.b.lon]],{color:RC[r.c],weight:4.5,opacity:.95,lineCap:'round'}).bindPopup(`<b>${RL[r.c]}</b><br>${r.a.name} ↔ ${r.b.name}<br>${fm(r.d)} m`).addTo(gr));
+cons.forEach((p,i)=>{const a=BY[p[0]],b=BY[p[1]];L.polyline([[a.lat,a.lon],[b.lat,b.lon]],{color:'#69766d',weight:2.5,dashArray:'3 8'}).bindPopup(`<b>Connector ${i+1}</b><br>${a.name} ↔ ${b.name}<br>${fm(hv(a,b))} m`).addTo(gc)});
+[gp,gy,gr].forEach(l=>l.addTo(map));
+const mk=(t,c)=>t==='dot'?`<i style="width:10px;height:10px;border-radius:50%;background:${c}"></i>`:t==='sq'?`<i style="width:12px;height:12px;border:1.5px solid ${c};background:${c}55"></i>`:t==='ln'?`<i style="width:18px;border-top:4px solid ${c};border-radius:2px"></i>`:`<i style="width:18px;border-top:3px dashed ${c}"></i>`;
+const chips=a=>a.map(x=>`<span class="chip">${mk(x[2],x[0])}${x[1]}</span>`).join('');
+const LAY=[{k:'pts',n:'Garden points',t:'Point',g:gp,c:G.length,lg:Object.entries(P).map(([n,c])=>[c,n,'dot'])},
+{k:'poly',n:'Garden polygons',t:'Polygon',g:gy,c:G.length,lg:[['#2e7d5b','Colour follows the prabhag class','sq']]},
+{k:'rel',n:'Pairs within 1 km',t:'Line',g:gr,c:rel.length,lg:RL.map((n,i)=>[RC[i],n,'ln'])},
+{k:'nn',n:'Nearest-garden links',t:'Line',g:gn,c:G.length,off:1,lg:[['#5b6c9d','Garden to nearest neighbour','dl']]},
+{k:'con',n:'Garden connectors',t:'Line',g:gc,c:cons.length,off:1,lg:[['#69766d','Selected garden pairs','dl']]}];
+document.getElementById('layerList').innerHTML=LAY.map(l=>`<div class="lyr"><label><input type="checkbox" data-k="${l.k}"${l.off?'':' checked'}><span>${l.n}</span><span class="badge">${l.t} · ${l.c}</span></label><div class="lg">${chips(l.lg)}</div></div>`).join('');
+document.querySelectorAll('#layerList input').forEach(i=>i.onchange=()=>{const l=LAY.find(x=>x.k===i.dataset.k);i.checked?map.addLayer(l.g):map.removeLayer(l.g)});
+document.getElementById('labelsToggle').onchange=e=>document.getElementById('map').classList.toggle('hide-labels',!e.target.checked);
+const Lg=L.control({position:'bottomright'});Lg.onAdd=()=>{const d=L.DomUtil.create('div','maplg');d.innerHTML='<b>Prabhag</b>'+chips(LAY[0].lg)+'<b>Pairs within 1 km</b>'+chips(LAY[2].lg);L.DomEvent.disableClickPropagation(d);return d};Lg.addTo(map);
+const North=L.Control.extend({options:{position:'topright'},onAdd:()=>{const d=L.DomUtil.create('div','north');d.innerHTML='N<span>↑</span>';return d}});map.addControl(new North());
+L.control.scale({imperial:false,metric:true,position:'bottomleft'}).addTo(map);
+const bounds=L.latLngBounds(G.map(g=>[g.lat,g.lon]));map.fitBounds(bounds.pad(.12));
+setTimeout(()=>map.invalidateSize(),0);addEventListener('load',()=>{map.invalidateSize();map.fitBounds(bounds.pad(.12))});addEventListener('resize',()=>map.invalidateSize());
+document.getElementById('kPts').textContent=G.length;document.getElementById('kPoly').textContent=G.length;document.getElementById('kRel').textContent=rel.length;
+document.getElementById('obsRel').textContent=`${rel.length} garden pairs lie within 1 km, in the Kothrud, Sopan Buag and Kondhwa–Wanawadi groupings; the longest is ${fm(Math.max(...rel.map(r=>r.d)))} m.`;
+document.getElementById('gardenRows').innerHTML=G.map(g=>`<tr data-sr="${g.sr}" style="cursor:pointer"><td>${g.no}</td><td title="${g.name}">${g.name}</td><td><span class="cdot" style="background:${P[g.prab]}"></span>${g.prab}</td><td>${g.ward||'–'}</td><td>${g.lat.toFixed(5)}</td><td>${g.lon.toFixed(5)}</td><td>${fm(g.nn.d)}</td></tr>`).join('');
+document.querySelectorAll('#gardenRows tr').forEach(r=>r.onclick=()=>{const g=BY[r.dataset.sr];map.flyTo([g.lat,g.lon],15);MK[g.sr].openPopup()});
+// statistics
+const cnt={};G.forEach(g=>cnt[g.prab]=(cnt[g.prab]||0)+1);
+const topCls=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0],ds=rel.map(r=>r.d),nd=G.map(g=>g.nn.d),far=G.reduce((a,b)=>b.nn.d>a.nn.d?b:a);
+const inRel=new Set();rel.forEach(r=>{inRel.add(r.a.sr);inRel.add(r.b.sr)});
+const shared=rel.filter(r=>r.d===0).length,avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
+const ST=[['Garden points mapped',G.length],['Prabhag classes',Object.keys(cnt).length],['Largest class',`${topCls[0]} (${topCls[1]})`],['Polygon footprint each','10,000 m²'],['Pairs within 1 km',rel.length],['Mean pair distance',fm(avg(ds))+' m'],['Longest pair within 1 km',fm(Math.max(...ds))+' m'],['Gardens with a neighbour within 1 km',`${inRel.size} of ${G.length} (${Math.round(inRel.size/G.length*100)}%)`],['Mean nearest-garden distance',fm(avg(nd))+' m'],['Farthest nearest-neighbour',`${fm(far.nn.d)} m (${far.name})`],['Gardens sharing one location',shared?shared*2:0]];
+document.getElementById('statRows').innerHTML=ST.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+// charts
+const bg={id:'bg',beforeDraw(c){const x=c.ctx;x.save();x.globalCompositeOperation='destination-over';x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.restore()}};
+const ax={ticks:{font:{size:10}},grid:{color:'#edf1eb'}};
+const chA=new Chart(document.getElementById('chA'),{type:'bar',plugins:[bg],data:{labels:Object.keys(cnt),datasets:[{data:Object.values(cnt),backgroundColor:Object.keys(cnt).map(k=>P[k]),borderRadius:6,maxBarThickness:40}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Gardens by prabhag'}},scales:{x:{ticks:{font:{size:10},maxRotation:40},grid:{display:false}},y:{beginAtZero:true,ticks:{precision:0,font:{size:10}},grid:{color:'#edf1eb'},title:{display:true,text:'Gardens'}}}}});
+const chB=new Chart(document.getElementById('chB'),{type:'bar',plugins:[bg],data:{labels:rel.map(r=>`${r.a.no}–${r.b.no}`),datasets:[{data:rel.map(r=>Math.round(r.d)),backgroundColor:rel.map(r=>RC[r.c]),borderRadius:6,maxBarThickness:34}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'Distance between garden pairs (garden numbers)'},tooltip:{callbacks:{title:i=>{const r=rel[i[0].dataIndex];return r.a.name+' ↔ '+r.b.name},label:i=>i.parsed.x+' m'}}},scales:{x:{...ax,beginAtZero:true,max:1000,title:{display:true,text:'Distance (m)'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
+const dl=(href,name)=>{const a=document.createElement('a');a.href=href;a.download=name;document.body.appendChild(a);a.click();a.remove()};
+dlA.onclick=()=>dl(chA.toBase64Image('image/png',1),'gardens_by_prabhag.png');
+dlB.onclick=()=>dl(chB.toBase64Image('image/png',1),'pair_distances_within_1km.png');
+dlC.onclick=()=>{const csv='Metric,Value\n'+ST.map(r=>`"${r[0]}","${String(r[1]).replace(/"/g,'""')}"`).join('\n');dl(URL.createObjectURL(new Blob([csv],{type:'text/csv'})),'garden_statistical_summary.csv')};
+</script>
+</body></html>
