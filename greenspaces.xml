@@ -1,0 +1,4 @@
+<!DOCTYPE connections>
+<qgsPgConnections version="1.0">
+    <postgis name="green_spaces" database="Urban Green Spaces and Road Accessibility in Pune" projectsInDatabase="false" geometryColumnsOnly="false" service="" savePassword="false" sslmode="SslPrefer" dontResolveType="false" host="localhost" schema="" port="5432" publicOnly="false" saveUsername="false" estimatedMetadata="false" allowGeometrylessTables="false"/>
+</qgsPgConnections>
